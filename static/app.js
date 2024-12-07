@@ -1,21 +1,34 @@
-const chatBox = document.getElementById('chat');
-const messageInput = document.getElementById('message');
-const sendButton = document.getElementById('send');
+document.addEventListener("DOMContentLoaded", () => {
+    const socket = new WebSocket("ws://localhost:8888/ws");
 
-const ws = new WebSocket(`ws://${location.host}/ws`);
+    // Элементы DOM
+    const messagesContainer = document.getElementById("messages");
+    const messageInput = document.getElementById("message-input");
+    const sendButton = document.getElementById("send-button");
 
-ws.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    const message = document.createElement('div');
-    message.textContent = `[${data.type}] ${data.message}`;
-    chatBox.appendChild(message);
-    chatBox.scrollTop = chatBox.scrollHeight;
-};
+    // Обработка входящих сообщений
+    socket.onmessage = function (event) {
+        const message = document.createElement("li");
+        message.textContent = event.data;
+        messagesContainer.appendChild(message);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight; // Автопрокрутка вниз
+    };
 
-sendButton.onclick = function() {
-    const message = messageInput.value;
-    if (message) {
-        ws.send(JSON.stringify({ type: "user", message: message }));
-        messageInput.value = '';
-    }
-};
+    // Отправка сообщений
+    sendButton.onclick = function () {
+        if (messageInput.value.trim() !== "") {
+            socket.send(messageInput.value.trim());
+            messageInput.value = ""; // Очистка поля ввода
+        }
+    };
+
+    // Обработка ошибок WebSocket
+    socket.onerror = function (error) {
+        console.error("WebSocket error:", error);
+    };
+
+    // Обработка закрытия соединения
+    socket.onclose = function () {
+        console.warn("WebSocket connection closed.");
+    };
+});
