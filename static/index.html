@@ -8,21 +8,30 @@
 </head>
 <body>
     <div id="chat-container">
-        <!-- Установка имени пользователя -->
-        <div id="name-container">
-            <input id="user-name-input" type="text" placeholder="Введите ваше имя" />
-            <button id="set-name-button">Установить имя</button>
-        </div>
-        <!-- Сообщения -->
-        <div id="messages-container">
-            <ul id="messages"></ul>
-        </div>
-        <!-- Поле ввода сообщений -->
-        <div id="input-container">
-            <input id="message-input" type="text" placeholder="Введите сообщение..." />
-            <button id="send-button">Отправить</button>
-        </div>
+    <!-- Установка имени пользователя -->
+    <div id="name-container">
+        <input id="user-name-input" type="text" placeholder="Введите ваше имя" />
+        <button id="set-name-button">Установить имя</button>
     </div>
+
+    <!-- Список пользователей онлайн -->
+    <div id="online-container">
+        <h4>Онлайн:</h4>
+        <ul id="online-users"></ul>
+    </div>
+
+    <!-- Сообщения -->
+    <div id="messages-container">
+        <ul id="messages"></ul>
+    </div>
+
+    <!-- Поле ввода сообщений -->
+    <div id="input-container">
+        <input id="message-input" type="text" placeholder="Введите сообщение..." />
+        <button id="send-button">Отправить</button>
+    </div>
+</div>
+
     <script src="/static/app.js"></script>
 </body>
 </html>

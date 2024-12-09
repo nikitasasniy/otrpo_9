@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Элементы DOM
     const messagesContainer = document.getElementById("messages");
+    const onlineUsersContainer = document.getElementById("online-users"); // Контейнер для списка пользователей
     const messageInput = document.getElementById("message-input");
     const sendButton = document.getElementById("send-button");
     const userNameInput = document.getElementById("user-name-input");
@@ -27,6 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        if (data.type === "users") {
+            // Обновление списка пользователей
+            onlineUsersContainer.innerHTML = ""; // Очистка списка
+            data.users.forEach((user) => {
+                const userItem = document.createElement("li");
+                userItem.textContent = user;
+                onlineUsersContainer.appendChild(userItem);
+            });
+            return;
+        }
+
+        // Отображение сообщений в чате
         const message = document.createElement("li");
         message.innerHTML = `<strong>${data.name}:</strong> ${data.message}`;
         message.style.wordBreak = "break-word"; // Перенос длинного текста

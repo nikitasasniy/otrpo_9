@@ -8,25 +8,44 @@ import asyncio
 # Асинхронный клиент Redis
 redis_client = aioredis.Redis()
 
-# Клиенты WebSocket
+# Список имён подключённых клиентов
 connected_clients = set()
+user_names = {}  # Сопоставление WebSocket соединения и имени пользователя
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         # При подключении добавляем клиента в список
         connected_clients.add(self)
-        self.write_message(json.dumps({"type": "system", "message": "Welcome to the chat!"}))
+        user_names[self] = "Аноним"  # Имя по умолчанию
+        self.broadcast_user_list()
 
     async def on_message(self, message):
-        # Публикуем сообщение в Redis
-        await redis_client.publish("chat", message)
+        # Проверяем, если это сообщение для смены имени
+        data = json.loads(message)
+        if "name" in data and "message" in data:
+            user_names[self] = data["name"]  # Обновляем имя пользователя
+
+            # Публикуем сообщение в Redis
+            chat_message = json.dumps({"name": data["name"], "message": data["message"]})
+            await redis_client.publish("chat", chat_message)
 
     def on_close(self):
         # При отключении удаляем клиента из списка
         connected_clients.remove(self)
+        user_names.pop(self, None)
+        self.broadcast_user_list()
+
+    def broadcast_user_list(self):
+        # Рассылка списка подключённых пользователей
+        user_list = list(user_names.values())
+        message = json.dumps({"type": "users", "users": user_list})
+        for client in connected_clients:
+            # Просто вызываем метод напрямую, без обращения к self.loop
+            client.write_message(message)
 
     def check_origin(self, origin):
         return True
+
 
 async def redis_listener():
     # Подписываемся на канал Redis
