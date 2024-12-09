@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Chat</title>
+    <title>Chat2</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div id="chat-container">
+        <!-- Установка имени пользователя -->
+        <div id="name-container">
+            <input id="user-name-input" type="text" placeholder="Введите ваше имя" />
+            <button id="set-name-button">Установить имя</button>
+        </div>
+        <!-- Сообщения -->
         <div id="messages-container">
             <ul id="messages"></ul>
         </div>
+        <!-- Поле ввода сообщений -->
         <div id="input-container">
-            <input id="message-input" type="text" placeholder="Type your message here..." />
-            <button id="send-button">Send</button>
+            <input id="message-input" type="text" placeholder="Введите сообщение..." />
+            <button id="send-button">Отправить</button>
         </div>
     </div>
     <script src="/static/app.js"></script>
